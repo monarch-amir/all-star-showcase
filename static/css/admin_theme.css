@@ -1,0 +1,96 @@
+/* ==================================================================
+   All Stars — Django admin theme
+   Loaded only inside /admin/, never on the public showcase.
+   ================================================================== */
+
+:root {
+    --admin-primary: #f59e0b;
+    --admin-primary-dark: #d97706;
+    --admin-ink: #0f172a;
+    --admin-ink-soft: #1e293b;
+}
+
+#header {
+    background: var(--admin-ink);
+    color: #fff;
+    padding: 14px 24px;
+}
+
+#branding h1,
+#branding h1 a:link,
+#branding h1 a:visited {
+    color: #fff;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+}
+
+.admin-brand-accent { color: var(--admin-primary); }
+
+.admin-view-site {
+    color: var(--admin-primary);
+    font-weight: 600;
+    text-decoration: none;
+    margin-left: 16px;
+}
+.admin-view-site:hover { color: #fff; }
+
+div.breadcrumbs {
+    background: var(--admin-ink-soft);
+    color: #cbd5e1;
+    padding: 10px 24px;
+}
+div.breadcrumbs a { color: var(--admin-primary); }
+
+.module h2,
+.module caption,
+.inline-group h2 {
+    background: var(--admin-ink-soft);
+    color: #fff;
+    font-weight: 700;
+}
+
+.button,
+input[type=submit],
+input[type=button],
+.submit-row input,
+a.button {
+    background: var(--admin-primary);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    padding: 9px 16px;
+}
+.button:hover,
+input[type=submit]:hover,
+input[type=button]:hover,
+.submit-row input:hover,
+a.button:hover {
+    background: var(--admin-primary-dark);
+}
+
+.button.default,
+input[type=submit].default,
+.submit-row input.default {
+    background: var(--admin-primary);
+}
+
+#changelist-filter h2 {
+    background: var(--admin-ink-soft);
+    color: #fff;
+}
+
+.object-tools a:link,
+.object-tools a:visited {
+    background: var(--admin-ink);
+    border-radius: 6px;
+}
+
+#nav-sidebar .current-model {
+    background: rgba(245, 158, 11, 0.12);
+}
+
+fieldset.collapse h2 {
+    background: var(--admin-ink-soft);
+    color: #fff;
+}

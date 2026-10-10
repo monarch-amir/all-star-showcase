@@ -1,0 +1,23 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{{ title }} | All Stars Control Panel{% endblock %}
+
+{% block branding %}
+<div id="site-name">
+    <a href="{% url 'admin:index' %}">
+        All Stars <span class="admin-brand-accent">Control Panel</span>
+    </a>
+</div>
+{% endblock %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/admin_theme.css' %}">
+{% endblock %}
+
+{% block nav-global %}
+    <a class="admin-view-site" href="{% url 'catalog:home' %}" target="_blank" rel="noopener">
+        View public showcase &rarr;
+    </a>
+{% endblock %}

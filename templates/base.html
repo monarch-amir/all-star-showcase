@@ -1,0 +1,114 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}All Stars — Premium Showcase{% endblock %}</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<header>
+    <div class="container header-inner">
+        <a class="brand-logo" href="{% url 'catalog:home' %}">
+            <div class="logo-box">
+                <img src="{% static 'img/logo.svg' %}" alt="All Stars">
+            </div>
+            <div>
+                <span class="brand-title">ALL <span>STARS</span></span>
+                <span class="brand-sub">Exclusive Showcase</span>
+            </div>
+        </a>
+
+        {# Pure-HTML search: GET form, no JavaScript required #}
+        <form class="header-search" method="get" action="{% url 'catalog:home' %}">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text"
+                   name="q"
+                   value="{{ q|default:'' }}"
+                   placeholder="Search products or categories…">
+            {% if active_category %}
+                <input type="hidden" name="category" value="{{ active_category }}">
+            {% endif %}
+        </form>
+
+        <div class="header-actions">
+            <a class="btn-home" href="{% url 'catalog:home' %}">
+                <i class="fa-solid fa-house"></i> Home
+            </a>
+            <div class="showcase-badge">
+                <i class="fa-solid fa-shield-halved" style="margin-right:6px;"></i> Showcase Only
+            </div>
+        </div>
+    </div>
+</header>
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+<footer>
+    <div class="container footer-grid">
+        <div class="footer-col">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+                <div style="width:36px;height:36px;background:#fff;border-radius:8px;padding:2px;">
+                    <img src="{% static 'img/logo.svg' %}" alt="All Stars"
+                         style="width:100%;height:100%;object-fit:contain;">
+                </div>
+                <span style="font-weight:700;color:#fff;font-size:16px;">ALL STARS</span>
+            </div>
+            <p>Your premier showcase destination for curated elite lifestyle gear,
+               apparel, electronics, and goods.</p>
+            <p style="font-size:12px;margin-top:15px;color:var(--slate-600);">
+                &copy; {% now "Y" %} All Stars Showcase. All rights reserved.
+            </p>
+        </div>
+
+        <div class="footer-col">
+            <h4>Quick Links</h4>
+            <ul>
+                <li><a href="{% url 'catalog:home' %}">Home Showcase</a></li>
+                <li><a href="{% url 'admin:index' %}">Admin Portal</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4>Categories</h4>
+            <ul>
+                {% for cat in nav_categories %}
+                    <li><a href="{% url 'catalog:home' %}?category={{ cat.slug }}">{{ cat.name }}</a></li>
+                {% empty %}
+                    <li><span>No categories yet</span></li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4>Showcase Notice</h4>
+            <div class="footer-notice">
+                <i class="fa-solid fa-circle-info" style="color:var(--primary);margin-right:4px;"></i>
+                This is a pure product showcase website. No payment transactions,
+                carts, or checkouts are processed here.
+            </div>
+        </div>
+    </div>
+</footer>
+
+{# The admin panel is a separate application under /admin/ — this is just an entry link #}
+<div class="fixed-admin-btn">
+    <a class="admin-trigger" href="{% url 'admin:index' %}" title="Admin Control Panel">
+        <i class="fa-solid fa-lock"></i>
+        <i class="fa-solid fa-gear"></i>
+    </a>
+    <div class="admin-tooltip">Admin Control Panel</div>
+</div>
+
+</body>
+</html>
