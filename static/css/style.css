@@ -1,17 +1,22 @@
 :root {
-            --primary: #f59e0b;
-            --primary-dark: #d97706;
-            --slate-900: #0f172a;
-            --slate-800: #1e293b;
-            --slate-600: #475569;
-            --slate-400: #94a3b8;
-            --slate-200: #e2e8f0;
-            --slate-100: #f1f5f9;
-            --slate-50: #f8fafc;
-            --white: #ffffff;
-            --rose: #e11d48;
-            --emerald: #059669;
-        }
+    /* Softer, eye-friendly terracotta/gold instead of bright orange */
+    --primary: #c2410c; 
+    --primary-dark: #9a3412;
+    
+    /* Soft, warm off-whites instead of stark pure white */
+    --white: #ffffff;
+    --slate-900: #0f172a;
+    --slate-800: #1e293b;
+    --slate-700: #334155;
+    --slate-600: #475569;
+    --slate-400: #94a3b8;
+    --slate-200: #e2e8f0;
+    --slate-100: #f1f5f9;
+    --slate-50: #f8fafc; /* Softer background */
+    
+    --rose: #e11d48;
+    --emerald: #059669;
+}
 
         * {
             box-sizing: border-box;
@@ -85,8 +90,8 @@
     width: 100%;
     height: 100%;
     object-fit: contain;
-    padding: 0;              /* removed the 2px that was shrinking it */
-    transform: scale(3.5);  /* nudges the star to fill the box */
+    padding: 0; 
+    transform: scale(1.1);
 }
         .brand-title {
             font-size: 22px;
@@ -423,9 +428,65 @@
         }
 
         /* Responsive */
-        @media(max-width: 768px) {
-            .header-search { display: none; }
-        }
+/* 1. Show mobile search bar on screens under 768px */
+@media (max-width: 767px) {
+    .mobile-search-bar {
+        display: block !important;
+        padding: 10px 16px 14px;
+        background: #ffffff;
+        border-bottom: 1px solid var(--slate-200);
+    }
+    .mobile-search-bar form {
+        position: relative;
+        width: 100%;
+    }
+    .mobile-search-bar input {
+        width: 100%;
+        padding: 9px 16px 9px 38px;
+        background: var(--slate-100);
+        border: 1px solid var(--slate-200);
+        border-radius: 50px;
+        font-size: 13px;
+        color: var(--slate-800);
+        outline: none;
+    }
+    .mobile-search-bar i {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--slate-400);
+        font-size: 13px;
+    }
+}
+
+/* 2. Missing badges on catalog cards */
+.product-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #f59e0b;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.product-brand {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--primary);
+    letter-spacing: 0.5px;
+    display: block;
+    margin-bottom: 4px;
+}
 
         /* ==================================================================
    NO-JS LAYER — server-rendered pages, pure CSS interactions
@@ -761,7 +822,7 @@
 .page-status { font-size: 13px; color: var(--slate-600); font-weight: 600; }
 
 /* ---------------------------- DETAIL ------------------------------ */
-.detail-wrap { padding: 40px 0; }
+.detail-wrap { padding: 15px 0 40px; }
 
 .back-link {
     display: inline-block;
@@ -910,4 +971,668 @@
     .hero-rail { height: 400px; }
     .detail-title { font-size: 24px; }
     .gallery-strip { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* ==================================================================
+   MOBILE-FIRST LAYOUT — bottom nav, app header, category strip
+   These rules only apply on screens narrower than 768px.
+   ================================================================== */
+
+/* ---------- App header ---------- */
+.app-header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--slate-200);
+}
+
+.app-header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 80px;
+    gap: 20px;
+}
+
+.app-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: inherit;
+    flex-shrink: 0;
+}
+
+.app-logo {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: #fff;
+    border: 1px solid var(--slate-200);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.app-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 0; /* Reduced from 8px to 4px for a perfect fit */
+    transform: scale(1.1); /* Slightly enlarges it to perfectly fill the corners */
+}
+
+.app-brand-title {
+    font-size: 20px;
+    font-weight: 900;
+    color: var(--slate-900);
+    letter-spacing: -0.5px;
+    display: block;
+}
+.app-brand-title span { color: var(--primary); }
+.app-brand-sub {
+    display: block;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 600;
+    color: var(--slate-400);
+}
+
+/* ---------- Section heads ---------- */
+.mobile-section { margin-bottom: 32px; }
+
+.section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    gap: 12px;
+}
+.section-head h3 {
+    font-size: 20px;
+    font-weight: 900;
+    color: var(--slate-900);
+    letter-spacing: -0.3px;
+}
+.section-more {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--primary-dark);
+    text-decoration: none;
+}
+.section-more.muted { color: var(--slate-400); }
+
+/* ---------- Category strip ---------- */
+.category-strip {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    padding-bottom: 6px;
+    margin: 0 -20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    scrollbar-width: none;
+}
+.category-strip::-webkit-scrollbar { display: none; }
+
+.category-card {
+    flex: 0 0 auto;
+    width: 96px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 8px;
+    background: #fff;
+    border: 1px solid var(--slate-200);
+    border-radius: 14px;
+    text-decoration: none;
+    color: var(--slate-700, #334155);
+    text-align: center;
+    scroll-snap-align: start;
+    transition: border-color 0.2s, transform 0.2s;
+}
+.category-card:hover { border-color: var(--primary); }
+.category-card.active {
+    border-color: var(--primary);
+    background: #fffbeb;
+    color: var(--primary-dark);
+}
+
+.category-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--slate-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-size: 15px;
+}
+.category-card.active .category-icon {
+    background: var(--primary);
+    color: #fff;
+}
+
+.category-card span {
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* ---------- Mobile bottom nav ---------- */
+.bottom-nav {
+    display: none; /* desktop: hidden */
+}
+
+/* ---------- Mobile search bar ---------- */
+.mobile-search-bar { display: none; }
+
+/* ---------- Footer desktop ---------- */
+.desktop-footer { /* visible by default on desktop */ }
+
+/* ==================================================================
+   TABLET / MOBILE (max-width: 767px)
+   ================================================================== */
+
+/* ==================================================================
+   DESKTOP (min-width: 768px) — keep original layout
+   ================================================================== */
+@media (min-width: 768px) {
+    .mobile-search-bar { display: none; }
+    .bottom-nav { display: none; }
+}
+
+/* ==================================================================
+   MOBILE PRODUCT DETAIL PAGE
+   ================================================================== */
+
+/* By default (desktop), hide the mobile blocks */
+.pd-mobile-hero,
+.pd-mobile-body { display: none; }
+
+/* ---- Floating action buttons on the hero image ---- */
+.pd-float-btn {
+    position: absolute;
+    top: 16px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    color: var(--slate-900);
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+    text-decoration: none;
+    z-index: 5;
+    -webkit-tap-highlight-color: transparent;
+}
+.pd-float-back { left: 16px; }
+.pd-float-fav  { right: 16px; }
+
+/* ==================================================================
+   Phone layout (≤ 767px)
+   ================================================================== */
+@media (max-width: 767px) {
+
+    /* 1. Force the page to never scroll sideways */
+    body {
+        overflow-x: hidden;
+    }
+
+    /* 2. Remove padding so the image touches the edges */
+    .detail-wrap { 
+        padding: 0 !important; 
+        max-width: 100% !important; 
+        width: 100% !important;
+    }
+
+    /* 3. Absolutely hide the desktop layout */
+    .pd-desktop { 
+        display: none !important; 
+    }
+
+    /* 4. Make the top image fill the screen width */
+    .pd-mobile-hero {
+        display: block;
+        position: relative;
+        width: 100%; 
+        aspect-ratio: 1 / 1; /* Perfect square */
+        background: #f1f5f9;
+        overflow: hidden;
+    }
+    
+    .pd-mobile-img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain; /* Shows the whole image without cropping */
+        display: block;
+    }
+
+    /* 5. Align the white card perfectly */
+    .pd-mobile-body {
+        display: block;
+        position: relative;
+        margin-top: -24px; 
+        padding: 0 14px 100px; 
+    }
+
+    .pd-sheet {
+        background: #fff;
+        border-radius: 24px; 
+        padding: 22px 20px 26px;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08); 
+    }
+
+    /* ---------- Floating action buttons ---------- */
+    .pd-float-btn {
+        position: absolute;
+        top: 16px;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.95);
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        color: var(--slate-900);
+        cursor: pointer;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+        text-decoration: none;
+        z-index: 5;
+    }
+    .pd-float-back { left: 16px; }
+    .pd-float-fav  { right: 16px; }
+
+    /* ---------- Content Styling ---------- */
+    .pd-top-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+    .pd-category {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        color: var(--slate-500, #64748b); 
+    }
+    .pd-badge {
+        background: var(--slate-800); 
+        color: #fff;
+        font-size: 9px;
+        font-weight: 800;
+        padding: 4px 10px;
+        border-radius: 50px;
+        letter-spacing: 0.5px;
+    }
+    .pd-title {
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--slate-900);
+        line-height: 1.25;
+        letter-spacing: -0.4px;
+        margin-bottom: 12px;
+    }
+
+    /* ---------- Rating & Price ---------- */
+    .pd-rating {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 14px;
+        font-size: 13px;
+    }
+    .pd-stars {
+        color: #f59e0b;
+        font-size: 13px;
+        letter-spacing: 1px;
+    }
+    .pd-rating strong {
+        font-weight: 800;
+        color: var(--slate-900);
+    }
+    .pd-reviews {
+        color: var(--slate-400);
+        font-size: 12px;
+    }
+
+    .pd-price-row {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+    .pd-price {
+        font-size: 24px;
+        font-weight: 800;
+        color: var(--slate-900);
+    }
+    .pd-per {
+        font-size: 12px;
+        color: var(--slate-400);
+        font-weight: 600;
+    }
+
+    /* ---------- Description ---------- */
+    .pd-desc {
+        font-size: 14px;
+        line-height: 1.65;
+        color: var(--slate-600);
+        margin-bottom: 22px;
+    }
+
+    /* ---------- Small Gallery Thumbnails ---------- */
+    .pd-gallery-strip {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        margin: 0 -20px 18px;
+        padding: 0 20px 6px;
+        scrollbar-width: none;
+    }
+    .pd-gallery-strip::-webkit-scrollbar { display: none; }
+    
+    .pd-gallery-thumb {
+        flex: 0 0 auto;
+        width: 66px;
+        height: 66px;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 2px solid transparent;
+        opacity: 0.55;
+        transition: opacity 0.2s, border-color 0.2s;
+    }
+    .pd-gallery-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .pd-gallery-thumb.active {
+        opacity: 1;
+        border-color: var(--primary);
+    }
+
+    /* ---------- Notice box ---------- */
+    .pd-notice {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        background: #f0fdf4; 
+        border: 1px solid #dcfce7;
+        border-radius: 14px;
+        padding: 14px;
+        margin-bottom: 22px;
+    }
+    .pd-notice i {
+        color: var(--emerald);
+        font-size: 15px;
+        margin-top: 2px;
+    }
+    .pd-notice strong {
+        font-size: 12px;
+        font-weight: 800;
+        color: #166534;
+        display: block;
+        margin-bottom: 3px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
+    .pd-notice p {
+        font-size: 12px;
+        color: #15803d;
+        line-height: 1.5;
+        margin: 0;
+    }
+}
+
+/* ==================================================================
+   BULLETPROOF FIX FOR MOBILE GALLERY
+   ================================================================== */
+@media (max-width: 767px) {
+    .pd-gallery-strip {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        gap: 8px !important;
+        overflow-x: auto !important;
+        margin: 0 -20px 18px !important;
+        padding: 0 20px 6px !important;
+        scrollbar-width: none;
+    }
+    .pd-gallery-strip::-webkit-scrollbar { display: none; }
+    
+    .pd-gallery-thumb {
+        display: block !important;
+        flex: 0 0 66px !important;
+        width: 66px !important;
+        height: 66px !important;
+        border-radius: 12px !important;
+        overflow: hidden !important;
+        border: 2px solid transparent !important;
+        opacity: 0.55 !important;
+        transition: opacity 0.2s, border-color 0.2s;
+    }
+    .pd-gallery-thumb img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+    }
+    .pd-gallery-thumb.active {
+        opacity: 1 !important;
+        border-color: var(--primary) !important;
+    }
+}
+
+/* ==================================================================
+   MOBILE SIMILAR PRODUCTS
+   ================================================================== */
+@media (max-width: 767px) {
+    
+    .pd-similar {
+        margin-top: 24px;
+        padding-top: 20px;
+        border-top: 1px solid var(--slate-100);
+    }
+    
+    .pd-similar h3 {
+        font-size: 16px;
+        font-weight: 900;
+        color: var(--slate-900);
+        margin-bottom: 12px;
+    }
+
+    .pd-similar-strip {
+        display: flex;
+        gap: 12px;
+        overflow-x: auto;
+        margin: 0 -20px;
+        padding: 0 20px 6px;
+        scrollbar-width: none;
+    }
+    .pd-similar-strip::-webkit-scrollbar { display: none; }
+
+    .pd-similar-card {
+        flex: 0 0 130px; /* Forces the card to stay small */
+        background: var(--slate-50);
+        border: 1px solid var(--slate-200);
+        border-radius: 12px;
+        padding: 10px;
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .pd-similar-card img {
+        width: 100%;
+        height: 100px;
+        object-fit: contain; /* Shows the whole product */
+        background: #fff;
+        border-radius: 8px;
+    }
+    
+    .pd-similar-brand {
+        display: block;
+        font-size: 9px;
+        font-weight: 800;
+        text-transform: uppercase;
+        color: var(--slate-400);
+    }
+    
+    .pd-similar-name {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--slate-900);
+        line-height: 1.2;
+    }
+    
+    .pd-similar-price {
+        font-size: 13px;
+        font-weight: 900;
+        color: var(--slate-900);
+    }
+}
+
+/* ==================================================================
+   ABSOLUTE FINAL FIX FOR MOBILE IMAGES
+   ================================================================== */
+@media (max-width: 767px) {
+    /* Force the gallery thumbnail containers to be tiny squares */
+    .pd-gallery-strip a.pd-gallery-thumb {
+        display: block !important;
+        flex: 0 0 66px !important;
+        width: 66px !important;
+        height: 66px !important;
+        min-width: 66px !important;
+        max-width: 66px !important;
+        border-radius: 12px !important;
+        overflow: hidden !important;
+    }
+    
+    /* Force the images inside them to fit perfectly */
+    .pd-gallery-strip a.pd-gallery-thumb img {
+        display: block !important;
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+    }
+
+    /* Force the similar products to be small cards */
+    .pd-similar-strip a.pd-similar-card {
+        display: flex !important;
+        flex: 0 0 130px !important;
+        width: 130px !important;
+        min-width: 130px !important;
+        max-width: 130px !important;
+    }
+
+    .pd-similar-strip a.pd-similar-card img {
+        width: 100% !important;
+        height: 100px !important;
+        object-fit: contain !important;
+    }
+}
+
+/* ==================================================================
+   HIDE HEADER ON SCROLL
+   ================================================================== */
+.app-header {
+    transition: transform 0.3s ease-in-out;
+}
+
+.app-header.header-hidden {
+    transform: translateY(-100%);
+}
+
+/* ==================================================================
+   INFINITE SCROLL LOADERS
+   ================================================================== */
+#infiniteScrollSentinel {
+    margin-top: 30px;
+    padding: 20px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.infinite-loader {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--slate-600);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.infinite-loader i {
+    font-size: 18px;
+    color: var(--primary);
+}
+
+.infinite-end {
+    color: var(--slate-400);
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+    padding: 10px 0;
+}
+
+.infinite-end::before,
+.infinite-end::after {
+    content: " — ";
+    opacity: 0.5;
+}
+
+@media (max-width: 767px) {
+    /* Hide any top search form or search icon button in the header bar */
+    .header-search,
+    .search-trigger,
+    .header-actions .search-btn {
+        display: none !important;
+    }
+
+    /* Keep the brand on the left and the badge on the right */
+    .app-header-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+}
+
+.app-header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+}
+
+.app-header.header-hidden {
+    transform: translateY(-100%);
 }

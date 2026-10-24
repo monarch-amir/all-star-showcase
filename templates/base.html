@@ -3,7 +3,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0f172a">
     <title>{% block title %}All Stars — Premium Showcase{% endblock %}</title>
 
     <link rel="stylesheet"
@@ -13,48 +14,62 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     {% block extra_css %}{% endblock %}
 </head>
-<body>
+<body id="top">
 
-<header>
-    <div class="container header-inner">
-        <a class="brand-logo" href="{% url 'catalog:home' %}">
-            <div class="logo-box">
+<!-- ============================ HEADER ============================ -->
+<header class="app-header">
+    <div class="container app-header-inner">
+
+        <a class="app-brand" href="{% url 'catalog:home' %}">
+            <div class="app-logo">
                 <img src="{% static 'img/logo.svg' %}" alt="All Stars">
             </div>
             <div>
-                <span class="brand-title">ALL <span>STARS</span></span>
-                <span class="brand-sub">Exclusive Showcase</span>
+                <span class="app-brand-title">ALL <span>STARS</span></span>
+                <span class="app-brand-sub">Exclusive Showcase</span>
             </div>
         </a>
 
-        {# Pure-HTML search: GET form, no JavaScript required #}
-        <form class="header-search" method="get" action="{% url 'catalog:home' %}">
+        {# Desktop Search - Wrapped in block #}
+        {% block header_search %}
+        <form class="header-search desktop-only" method="get" action="{% url 'catalog:home' %}">
             <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text"
-                   name="q"
-                   value="{{ q|default:'' }}"
+            <input type="text" name="q" value="{{ q|default:'' }}"
                    placeholder="Search products or categories…">
             {% if active_category %}
                 <input type="hidden" name="category" value="{{ active_category }}">
             {% endif %}
         </form>
+        {% endblock %}
 
         <div class="header-actions">
-            <a class="btn-home" href="{% url 'catalog:home' %}">
-                <i class="fa-solid fa-house"></i> Home
-            </a>
             <div class="showcase-badge">
                 <i class="fa-solid fa-shield-halved" style="margin-right:6px;"></i> Showcase Only
             </div>
         </div>
+
     </div>
+
+    {# Mobile Search - Wrapped in block #}
+    {% block mobile_search %}
+    <div class="mobile-search-bar" id="mobileSearch">
+        <form method="get" action="{% url 'catalog:home' %}">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" name="q" value="{{ q|default:'' }}" placeholder="Search">
+            {% if active_category %}
+                <input type="hidden" name="category" value="{{ active_category }}">
+            {% endif %}
+        </form>
+    </div>
+    {% endblock %}
 </header>
 
 <main>
     {% block content %}{% endblock %}
 </main>
 
-<footer>
+<!-- ====================== DESKTOP FOOTER ========================== -->
+<footer class="desktop-footer">
     <div class="container footer-grid">
         <div class="footer-col">
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
@@ -75,7 +90,6 @@
             <h4>Quick Links</h4>
             <ul>
                 <li><a href="{% url 'catalog:home' %}">Home Showcase</a></li>
-                <li><a href="{% url 'admin:index' %}">Admin Portal</a></li>
             </ul>
         </div>
 
@@ -84,8 +98,6 @@
             <ul>
                 {% for cat in nav_categories %}
                     <li><a href="{% url 'catalog:home' %}?category={{ cat.slug }}">{{ cat.name }}</a></li>
-                {% empty %}
-                    <li><span>No categories yet</span></li>
                 {% endfor %}
             </ul>
         </div>
@@ -101,14 +113,8 @@
     </div>
 </footer>
 
-{# The admin panel is a separate application under /admin/ — this is just an entry link #}
-<div class="fixed-admin-btn">
-    <a class="admin-trigger" href="{% url 'admin:index' %}" title="Admin Control Panel">
-        <i class="fa-solid fa-lock"></i>
-        <i class="fa-solid fa-gear"></i>
-    </a>
-    <div class="admin-tooltip">Admin Control Panel</div>
-</div>
-
+<!-- ===================== MOBILE BOTTOM NAV ======================== -->
+    {# Scripts injected here for specific pages #}
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

@@ -3,75 +3,200 @@
 {% block title %}{{ product.name }} — All Stars{% endblock %}
 
 {% block content %}
-<div class="container detail-wrap">
+<div class="detail-wrap">
 
-    <a class="back-link" href="{% url 'catalog:home' %}">
-        <i class="fa-solid fa-arrow-left" style="margin-right:6px;"></i> Back to Home
-    </a>
+    {# ==================== MOBILE HERO (phones only) ==================== #}
+    <div class="pd-mobile-hero">
+        <img class="pd-mobile-img" src="{{ active_image }}" alt="{{ product.name }}">
 
-    <div class="detail-grid">
+        <a class="pd-float-btn pd-float-back" href="{% url 'catalog:home' %}" aria-label="Go back">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
 
-        {# ------------------------- Gallery ------------------------- #}
-        <div>
-            <div class="detail-main-media">
-                <img src="{{ active_image }}" alt="{{ product.name }}">
+        <button class="pd-float-btn pd-float-fav" type="button" aria-label="Save to favourites">
+            <i class="fa-regular fa-heart"></i>
+        </button>
+    </div>
+
+    {# ==================== MOBILE BODY (phones only) ==================== #}
+    <div class="pd-mobile-body">
+        <div class="pd-sheet">
+
+            <div class="pd-top-row">
+                <span class="pd-category">{{ product.category.name }}</span>
+                {% if product.is_featured %}
+                    <span class="pd-badge">FEATURED</span>
+                {% endif %}
+            </div>
+
+            <h1 class="pd-title">{{ product.name }}</h1>
+
+            <div class="pd-rating">
+                <span class="pd-stars">
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star-half-stroke"></i>
+                </span>
+                <strong>{{ product.rating|default:"4.8" }}</strong>
+                <span class="pd-reviews">({{ product.review_count|default:"89" }} reviews)</span>
+            </div>
+
+            <div class="pd-price-row">
+                <span class="pd-price">${{ product.price|floatformat:2 }}</span>
+                {% if product.compare_at_price %}
+                    <span class="pd-compare">${{ product.compare_at_price|floatformat:2 }}</span>
+                {% endif %}
+                <span class="pd-per">per unit</span>
+            </div>
+
+            <div class="pd-desc">
+                {{ product.description }}
             </div>
 
             {% if images|length > 1 %}
-                <div class="gallery-strip">
+                <div class="pd-gallery-strip">
                     {% for img in images %}
-                        <a class="gallery-thumb {% if forloop.counter0 == active_index %}active{% endif %}"
-                           href="?image={{ forloop.counter0 }}"
-                           aria-label="View image {{ forloop.counter }}">
-                            <img src="{{ img }}" alt="{{ product.name }} — image {{ forloop.counter }}">
+                        <a class="pd-gallery-thumb {% if forloop.counter0 == active_index %}active{% endif %}"
+                           href="?image={{ forloop.counter0 }}">
+                            <img src="{{ img }}" alt="Image {{ forloop.counter }}">
                         </a>
                     {% endfor %}
                 </div>
             {% endif %}
-        </div>
 
-        {# -------------------------- Info --------------------------- #}
-        <div class="detail-info">
-            <div>
-                <span class="badge-category badge-amber">{{ product.category.name }}</span>
-                <h1 class="detail-title">{{ product.name }}</h1>
-                <div class="detail-price">${{ product.price|floatformat:2 }}</div>
-                <p class="detail-short">{{ product.short_description }}</p>
-
-                <h4 class="detail-label">Full Description</h4>
-                <p class="detail-long">{{ product.description }}</p>
-            </div>
-
-            <div class="detail-notice">
-                <div class="detail-notice-title">
-                    <i class="fa-solid fa-circle-info" style="color:var(--primary);"></i>
-                    Showcase Item Only
+            <div class="pd-notice">
+                <i class="fa-solid fa-circle-info"></i>
+                <div>
+                    <strong>Showcase Item Only</strong>
+                    <p>All Stars operates strictly as an exclusive product showcase. No carts or checkouts.</p>
                 </div>
-                <p>
-                    All Stars operates strictly as an exclusive product showcase.
-                    No cart additions or payment checkouts are available.
-                </p>
             </div>
+
+            {% if similar_products %}
+                <div class="pd-similar">
+                    <h3>Similar products</h3>
+                    <div class="pd-similar-strip">
+                        {% for sim in similar_products %}
+                            <a class="pd-similar-card" href="{{ sim.get_absolute_url }}">
+                                <img src="{{ sim.image_url }}" alt="{{ sim.name }}">
+                                <div>
+                                    <span class="pd-similar-brand">{{ sim.category.name }}</span>
+                                    <span class="pd-similar-name">{{ sim.name }}</span>
+                                    <span class="pd-similar-price">${{ sim.price|floatformat:2 }}</span>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
         </div>
     </div>
 
-    {# ---------------------- Similar products ---------------------- #}
-    {% if similar_products %}
-        <div class="similar-block">
-            <h3>Similar Products in {{ product.category.name }}</h3>
-            <div class="similar-grid">
-                {% for sim in similar_products %}
-                    <a class="similar-card" href="{{ sim.get_absolute_url }}">
-                        <img src="{{ sim.image_url }}" alt="{{ sim.name }}" loading="lazy">
-                        <div>
-                            <h5>{{ sim.name }}</h5>
-                            <span>${{ sim.price|floatformat:2 }}</span>
+    {# ==================== DESKTOP LAYOUT (unchanged) ==================== #}
+    <div class="pd-desktop">
+        <div class="container"> <!-- Added container for side padding -->
+            
+            <div class="detail-grid">
+                <div>
+                    <div class="detail-main-media">
+                        <img src="{{ active_image }}" alt="{{ product.name }}">
+                    </div>
+
+                    {% if images|length > 1 %}
+                        <div class="gallery-strip">
+                            {% for img in images %}
+                                <a class="gallery-thumb {% if forloop.counter0 == active_index %}active{% endif %}"
+                                   href="?image={{ forloop.counter0 }}">
+                                    <img src="{{ img }}" alt="Image {{ forloop.counter }}">
+                                </a>
+                            {% endfor %}
                         </div>
-                    </a>
-                {% endfor %}
+                    {% endif %}
+                </div>
+
+                <div class="detail-info">
+                    <div>
+                        <span class="badge-category badge-amber">{{ product.category.name }}</span>
+                        <h1 class="detail-title">{{ product.name }}</h1>
+                        <div class="detail-price">${{ product.price|floatformat:2 }}</div>
+
+                        <h4 class="detail-label">Full Description</h4>
+                        <p class="detail-long">{{ product.description }}</p>
+                    </div>
+
+                    <div class="detail-notice">
+                        <div class="detail-notice-title">
+                            <i class="fa-solid fa-circle-info" style="color:var(--primary);"></i>
+                            Showcase Item Only
+                        </div>
+                        <p>
+                            All Stars operates strictly as an exclusive product showcase.
+                            No cart additions or payment checkouts are available.
+                        </p>
+                    </div>
+                </div>
             </div>
-        </div>
-    {% endif %}
+
+            {% if similar_products %}
+                <div class="similar-block">
+                    <h3>Similar Products in {{ product.category.name }}</h3>
+                    <div class="similar-grid">
+                        {% for sim in similar_products %}
+                            <a class="similar-card" href="{{ sim.get_absolute_url }}">
+                                <img src="{{ sim.image_url }}" alt="{{ sim.name }}">
+                                <div>
+                                    <h5>{{ sim.name }}</h5>
+                                    <span>${{ sim.price|floatformat:2 }}</span>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+            
+        </div> <!-- End container -->
+    </div>
 
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const header = document.querySelector('.app-header');
+
+        // Only show nav when user is at the very top of the page
+        window.addEventListener('scroll', function() {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            if (scrollTop <= 15) {
+                // At the top: show the nav
+                header.classList.remove('header-hidden');
+            } else {
+                // Anywhere below the top: hide the nav
+                header.classList.add('header-hidden');
+            }
+        }, { passive: true });
+
+        // Instant gallery thumbnail switching (no page reload)
+        const mainMobileImg = document.querySelector('.pd-mobile-img');
+        const mainDesktopImg = document.querySelector('.detail-main-media img');
+        const allThumbs = document.querySelectorAll('.pd-gallery-thumb, .gallery-thumb');
+
+        allThumbs.forEach(thumb => {
+            thumb.addEventListener('click', function(e) {
+                e.preventDefault();
+                const newSrc = this.querySelector('img').getAttribute('src');
+                if (mainMobileImg) mainMobileImg.src = newSrc;
+                if (mainDesktopImg) mainDesktopImg.src = newSrc;
+
+                allThumbs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    });
+</script>
 {% endblock %}

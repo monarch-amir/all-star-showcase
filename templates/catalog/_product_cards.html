@@ -1,0 +1,16 @@
+{% for product in page_obj %}
+    <a class="product-card" href="{{ product.get_absolute_url }}">
+        <div class="product-media">
+            <img src="{{ product.image_url }}"
+                 alt="{{ product.name }}" loading="lazy">
+            {% if product.is_featured %}
+                <span class="product-badge">★</span>
+            {% endif %}
+        </div>
+        <div class="product-body">
+            <span class="product-brand">{{ product.category.name }}</span>
+            <h4 class="product-name">{{ product.name }}</h4>
+            <span class="product-price">${{ product.price|floatformat:2 }}</span>
+        </div>
+    </a>
+{% endfor %}

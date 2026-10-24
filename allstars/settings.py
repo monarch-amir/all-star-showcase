@@ -8,7 +8,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ----------------------------------------------------------------------
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-change-me-in-production-9f2a7c1b4e')
 DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
-ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '*').split(',')
+ALLOWED_HOSTS = os.environ.get(
+    'DJANGO_ALLOWED_HOSTS',
+    '127.0.0.1,localhost,192.168.1.4'
+).split(',')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -52,11 +55,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'allstars.wsgi.application'
 
+import dj_database_url
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default='sqlite:///' + str(BASE_DIR / 'db.sqlite3'),
+        conn_max_age=600
+    )
 }
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -89,3 +94,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 ADMIN_SITE_HEADER = 'All Stars Control Panel'
 ADMIN_SITE_TITLE = 'All Stars Admin'
 ADMIN_INDEX_TITLE = 'Catalogue Management'
+
+# In allstars/settings.py
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'change-this-in-production')
+DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
+
+# Allow your live domain and local testing
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '*').split(',')
+
+ # temporary — for local testing only

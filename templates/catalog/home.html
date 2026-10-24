@@ -5,10 +5,7 @@
 {% block content %}
 <div class="page-wrap">
 
-    {% comment %}
-        HERO RAIL — A pure CSS scroll-snap carousel.
-        The dots are plain anchor links; no JavaScript involved.
-    {% endcomment %}                                                  
+    {# ---------------------------- HERO ---------------------------- #}
     {% if featured %}
     <section class="container hero-section">
         <div class="hero-frame">
@@ -26,118 +23,98 @@
                         <p class="hero-desc">{{ p.short_description }}</p>
                         <div>
                             <a class="btn-cta" href="{{ p.get_absolute_url }}">
-                                View Details <i class="fa-solid fa-arrow-right"></i>
+                                View <i class="fa-solid fa-arrow-right"></i>
                             </a>
                         </div>
                     </div>
                 </article>
                 {% endfor %}
             </div>
-
-            {% if featured|length > 1 %}
-            <nav class="hero-dots" aria-label="Featured slides">
-                {% for p in featured %}
-                    <a class="hero-dot" href="#hero-{{ forloop.counter }}"
-                       aria-label="Go to slide {{ forloop.counter }}"></a>
-                {% endfor %}
-            </nav>
-            {% endif %}
-        </div>
-    </section>
-    {% else %}
-    <section class="container hero-section">
-        <div class="hero-empty">
-            <i class="fa-solid fa-star"></i>
-            <h3>No Featured Products</h3>
-            <p>Flag up to five products as “Featured” in the admin panel to showcase them here.</p>
         </div>
     </section>
     {% endif %}
 
-    {# ============================= CATALOGUE ============================= #}
-    <section class="container" id="catalogSection">
-
-        <div class="catalog-head">
-            <div>
-                <h3 class="catalog-title">Product Catalog</h3>
-                <p class="catalog-sub">Explore our curated selection of high-end items</p>
-            </div>
-
-            <div class="filter-bar">
-                <a class="chip {% if not active_category %}chip-active{% endif %}"
-                   href="{% url 'catalog:home' %}{% if q %}?q={{ q|urlencode }}{% endif %}">All Items</a>
-                {% for cat in categories %}
-                    <a class="chip {% if active_category == cat.slug %}chip-active{% endif %}"
-                       href="{% url 'catalog:home' %}?category={{ cat.slug }}{% if q %}&q={{ q|urlencode }}{% endif %}">
-                        {{ cat.name }}
-                    </a>
-                {% endfor %}
-            </div>
+    {# ------------------------ CATEGORIES STRIP ---------------------- #}
+    {% if categories %}
+    <section class="container mobile-section" id="categories">
+        <div class="section-head">
+            <h3>Categories</h3>
+            <a href="#catalogSection" class="section-more">
+                See all <i class="fa-solid fa-chevron-right"></i>
+            </a>
         </div>
 
-        {% if q %}
-            <div class="search-summary">
-                <span>
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    Searching for: <strong>{{ q }}</strong> ({{ result_count }} found)
-                </span>
-                <a class="search-clear"
-                   href="{% url 'catalog:home' %}{% if active_category %}?category={{ active_category }}{% endif %}">
-                    Clear
+        <div class="category-strip">
+            <a href="{% url 'catalog:home' %}{% if q %}?q={{ q|urlencode }}{% endif %}"
+               class="category-card {% if not active_category %}active{% endif %}">
+                <div class="category-icon"><i class="fa-solid fa-border-all"></i></div>
+                <span>All</span>
+            </a>
+
+            {% for cat in categories %}
+                <a href="{% url 'catalog:home' %}?category={{ cat.slug }}{% if q %}&q={{ q|urlencode }}{% endif %}"
+                   class="category-card {% if active_category == cat.slug %}active{% endif %}">
+                    <div class="category-icon"><i class="fa-solid fa-tag"></i></div>
+                    <span>{{ cat.name }}</span>
                 </a>
-            </div>
-        {% endif %}
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    {# --------------------------- PRODUCTS --------------------------- #}
+    <section class="container mobile-section" id="catalogSection">
+
+        <div class="section-head">
+            <h3>{% if q %}Results for “{{ q }}”{% else %}Products{% endif %}</h3>
+            {% if q or active_category %}
+                <a href="{% url 'catalog:home' %}" class="section-more">
+                    Clear <i class="fa-solid fa-xmark"></i>
+                </a>
+            {% else %}
+                <span class="section-more muted">{{ result_count }} items</span>
+            {% endif %}
+        </div>
 
         {% if page_obj.object_list %}
-            <div class="product-grid">
-                {% for product in page_obj %}
-                    <a class="product-card" href="{{ product.get_absolute_url }}">
-                        <div class="product-media">
-                            <img src="{{ product.image_url }}"
-                                 alt="{{ product.name }}" loading="lazy">
-                            <span class="product-tag">{{ product.category.name }}</span>
-                        </div>
-                        <div class="product-body">
-                            <div>
-                                <h4 class="product-name">{{ product.name }}</h4>
-                                <p class="product-desc">{{ product.short_description }}</p>
-                            </div>
-                            <div class="product-foot">
-                                <span class="product-price">${{ product.price|floatformat:2 }}</span>
-                                <span class="product-cta">
-                                    Explore <i class="fa-solid fa-arrow-right"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </a>
-                {% endfor %}
+            {# The product grid is populated initially and dynamically appended to #}
+            <div class="product-grid" id="productGrid">
+                {% include 'catalog/_product_cards.html' %}
             </div>
 
-            {% if page_obj.paginator.num_pages > 1 %}
-                <nav class="pagination" aria-label="Catalogue pages">
-                    {% if page_obj.has_previous %}
-                        <a class="page-link"
-                           href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q|urlencode }}{% endif %}{% if active_category %}&category={{ active_category }}{% endif %}">
-                            &larr; Prev
-                        </a>
-                    {% else %}
-                        <span class="page-link disabled">&larr; Prev</span>
-                    {% endif %}
+            {# Infinite Scroll Loader & Sentinel #}
+            <div id="infiniteScrollSentinel"
+                 data-has-next="{% if page_obj.has_next %}true{% else %}false{% endif %}"
+                 data-next-page="{% if page_obj.has_next %}{{ page_obj.next_page_number }}{% endif %}">
+                <div class="infinite-loader" id="infiniteLoader" style="display: none;">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i>
+                    <span>Loading more products…</span>
+                </div>
+                <div class="infinite-end" id="infiniteEnd" style="{% if page_obj.has_next %}display: none;{% endif %}">
+                    <span>You've seen all products</span>
+                </div>
+            </div>
 
-                    <span class="page-status">
-                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
-                    </span>
-
-                    {% if page_obj.has_next %}
-                        <a class="page-link"
-                           href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q|urlencode }}{% endif %}{% if active_category %}&category={{ active_category }}{% endif %}">
-                            Next &rarr;
-                        </a>
-                    {% else %}
-                        <span class="page-link disabled">Next &rarr;</span>
-                    {% endif %}
-                </nav>
-            {% endif %}
+            {# Fallback pagination if JS is disabled #}
+            <noscript>
+                {% if page_obj.paginator.num_pages > 1 %}
+                    <nav class="pagination" aria-label="Catalogue pages">
+                        {% if page_obj.has_previous %}
+                            <a class="page-link"
+                               href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q|urlencode }}{% endif %}{% if active_category %}&category={{ active_category }}{% endif %}">
+                                &larr; Prev
+                            </a>
+                        {% endif %}
+                        <span class="page-status">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+                        {% if page_obj.has_next %}
+                            <a class="page-link"
+                               href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q|urlencode }}{% endif %}{% if active_category %}&category={{ active_category }}{% endif %}">
+                                Next &rarr;
+                            </a>
+                        {% endif %}
+                    </nav>
+                {% endif %}
+            </noscript>
 
         {% else %}
             <div class="empty-state">
@@ -149,4 +126,116 @@
 
     </section>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- 1. Hero Carousel Auto-Scroll ---
+        const rail = document.querySelector('.hero-rail');
+        if (rail) {
+            const originalSlides = rail.querySelectorAll('.hero-slide');
+            if (originalSlides.length > 1) {
+                const firstClone = originalSlides[0].cloneNode(true);
+                firstClone.id = 'hero-clone';
+                rail.appendChild(firstClone);
+
+                const allSlides = rail.querySelectorAll('.hero-slide');
+                let currentIndex = 0;
+                let autoScrollInterval;
+
+                function scrollToNext() {
+                    currentIndex++;
+                    const slideWidth = allSlides[0].offsetWidth;
+                    rail.scrollTo({ left: slideWidth * currentIndex, behavior: 'smooth' });
+
+                    if (currentIndex === originalSlides.length) {
+                        setTimeout(() => {
+                            rail.style.scrollBehavior = 'auto';
+                            rail.scrollLeft = 0;
+                            currentIndex = 0;
+                            setTimeout(() => { rail.style.scrollBehavior = 'smooth'; }, 50);
+                        }, 600);
+                    }
+                }
+
+                function startAutoScroll() { autoScrollInterval = setInterval(scrollToNext, 3500); }
+                function stopAutoScroll() { clearInterval(autoScrollInterval); }
+
+                startAutoScroll();
+                rail.addEventListener('mouseenter', stopAutoScroll);
+                rail.addEventListener('mouseleave', startAutoScroll);
+                rail.addEventListener('touchstart', stopAutoScroll, {passive: true});
+                rail.addEventListener('touchend', startAutoScroll);
+            }
+        }
+
+        // --- 2. Infinite Scroll Implementation ---
+        const sentinel = document.getElementById('infiniteScrollSentinel');
+        const productGrid = document.getElementById('productGrid');
+        const loader = document.getElementById('infiniteLoader');
+        const endNotice = document.getElementById('infiniteEnd');
+
+        if (!sentinel || !productGrid) return;
+
+        let hasNext = sentinel.dataset.hasNext === 'true';
+        let nextPage = parseInt(sentinel.dataset.nextPage, 10);
+        let isLoading = false;
+
+        async function loadMoreProducts() {
+            if (isLoading || !hasNext) return;
+            isLoading = true;
+            loader.style.display = 'flex';
+
+            // Preserve search query and category parameters
+            const params = new URLSearchParams(window.location.search);
+            params.set('page', nextPage);
+            params.set('ajax', '1');
+
+            try {
+                const response = await fetch(`${window.location.pathname}?${params.toString()}`, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
+
+                if (!response.ok) throw new Error('Network error');
+
+                const html = await response.text();
+                
+                // Append new cards to grid
+                productGrid.insertAdjacentHTML('beforeend', html);
+
+                // Read next-page metadata from headers
+                const hasNextHeader = response.headers.get('X-Has-Next');
+                const nextPageHeader = response.headers.get('X-Next-Page');
+
+                hasNext = (hasNextHeader === 'true');
+                nextPage = nextPageHeader ? parseInt(nextPageHeader, 10) : null;
+
+                if (!hasNext) {
+                    observer.disconnect();
+                    endNotice.style.display = 'block';
+                }
+            } catch (err) {
+                console.error('Failed to load products:', err);
+            } finally {
+                loader.style.display = 'none';
+                isLoading = false;
+            }
+        }
+
+        // Trigger load when the user is 250px away from the bottom sentinel
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting && hasNext && !isLoading) {
+                loadMoreProducts();
+            }
+        }, {
+            rootMargin: '250px 0px',
+            threshold: 0.1
+        });
+
+        if (hasNext) {
+            observer.observe(sentinel);
+        }
+    });
+</script>
 {% endblock %}

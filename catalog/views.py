@@ -1,6 +1,7 @@
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, render
+from django.http import HttpResponse
 
 from .models import Category, Product
 
@@ -47,6 +48,18 @@ def home(request):
     paginator = Paginator(products, PRODUCTS_PER_PAGE)
     page_obj = paginator.get_page(request.GET.get('page'))
 
+    # Check if request is an infinite scroll AJAX call
+    is_ajax = (
+        request.headers.get('x-requested-with') == 'XMLHttpRequest'
+        or request.GET.get('ajax') == '1'
+    )
+
+    if is_ajax:
+        response = render(request, 'catalog/_product_cards.html', {'page_obj': page_obj})
+        response['X-Has-Next'] = 'true' if page_obj.has_next() else 'false'
+        response['X-Next-Page'] = str(page_obj.next_page_number()) if page_obj.has_next() else ''
+        return response
+
     context = {
         'featured': _featured_products(),
         'categories': Category.objects.all(),
@@ -65,7 +78,6 @@ def product_detail(request, pk):
         is_active=True,
     )
 
-    # Build the gallery list server-side; the selected index arrives as ?image=N
     images = [product.image_url]
     for gallery_item in product.gallery_images.all():
         url = gallery_item.image_url
