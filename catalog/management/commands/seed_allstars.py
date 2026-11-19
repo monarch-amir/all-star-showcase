@@ -13,7 +13,6 @@ CATEGORIES = [
     'Apparel',
     'Footwear',
     'Electronics',
-    'Gear & Equipment',
     'Accessories',
     'Solar',
     'Audio Equipment',
