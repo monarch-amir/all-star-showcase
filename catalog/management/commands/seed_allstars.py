@@ -16,6 +16,7 @@ CATEGORIES = [
     'Gear & Equipment',
     'Accessories',
     'Solar',
+    'Audio Equipment',
 ]
 
 # (name, category, price, short_description, description, main_image, gallery, is_featured)
